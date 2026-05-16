@@ -13,8 +13,9 @@ env:
 
 jobs:
   build:
-    name: ${{ matrix.artifact_name }}
+    name: Build ${{ matrix.artifact_name }}
     runs-on: ${{ matrix.runner }}
+
     strategy:
       fail-fast: false
       matrix:
@@ -23,17 +24,16 @@ jobs:
             artifact_name: lan-share-linux-x86_64
             bin_name: lan-share
             archive_ext: tar.gz
-            archive_cmd: tar
+
           - runner: windows-latest
             artifact_name: lan-share-windows-x86_64
             bin_name: lan-share.exe
             archive_ext: zip
-            archive_cmd: zip
+
           - runner: macos-latest
-            artifact_name: lan-share-macos-aarch64
+            artifact_name: lan-share-macos
             bin_name: lan-share
             archive_ext: tar.gz
-            archive_cmd: tar
 
     steps:
       - name: Checkout
@@ -51,33 +51,36 @@ jobs:
       - name: Assemble portable package
         shell: bash
         run: |
-          PKG="lan-share-${{ matrix.artifact_name }}"
+          PKG="${{ matrix.artifact_name }}"
           mkdir -p "$PKG/static" "$PKG/uploads"
+
           cp "target/release/${{ matrix.bin_name }}" "$PKG/"
           cp -r static/* "$PKG/static/"
           touch "$PKG/uploads/.gitkeep"
 
           cat > "$PKG/README.txt" <<'EOF'
-LAN Share — portable build
-==========================
+LAN Share Portable Build
 
-1. Connect to Wi-Fi.
-2. Run the lan-share binary from this folder (keep static/ beside it).
-3. On this PC: http://localhost:5000
-4. On phones: use http://192.168.x.x:5000 from the terminal (NOT localhost).
+1. Connect all devices to the same Wi-Fi/LAN.
+2. Run the app from this folder.
+3. On this computer: http://localhost:5000
+4. On phones: use the LAN URL shown in terminal or scan QR code.
+5. Do not use localhost on phone.
 
 Allow firewall access for port 5000 if prompted.
 EOF
 
-          if [[ "${{ matrix.archive_cmd }}" == "tar" ]]; then
+          if [[ "${{ matrix.archive_ext }}" == "tar.gz" ]]; then
             chmod +x "$PKG/${{ matrix.bin_name }}"
+
             cat > "$PKG/run.sh" <<'EOF'
 #!/usr/bin/env bash
 cd "$(dirname "$0")"
 ./lan-share
 EOF
+
             chmod +x "$PKG/run.sh"
-            tar -czf "${PKG}.${{ matrix.archive_ext }}" "$PKG"
+            tar -czf "${PKG}.tar.gz" "$PKG"
           else
             cat > "$PKG/run.bat" <<'EOF'
 @echo off
@@ -85,18 +88,17 @@ cd /d "%~dp0"
 lan-share.exe
 pause
 EOF
-            # GitHub Windows runners include zip via PowerShell
-            powershell -Command "Compress-Archive -Path '$PKG' -DestinationPath '${PKG}.${{ matrix.archive_ext }}' -Force"
-          fi
 
-          ls -la "${PKG}.${{ matrix.archive_ext }}"
+            powershell -Command "Compress-Archive -Path '$PKG' -DestinationPath '${PKG}.zip' -Force"
+          fi
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact_name }}
-          path: lan-share-${{ matrix.artifact_name }}.${{ matrix.archive_ext }}
-          retention-days: 30
+          path: |
+            *.tar.gz
+            *.zip
 
   release:
     name: Publish GitHub Release
@@ -104,7 +106,7 @@ EOF
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download all artifacts
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
@@ -119,5 +121,3 @@ EOF
           files: |
             artifacts/**/*.tar.gz
             artifacts/**/*.zip
-          draft: false
-          prerelease: ${{ contains(github.ref_name, '-') }}
