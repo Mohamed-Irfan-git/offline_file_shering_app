@@ -69,7 +69,6 @@ pub fn page_html(lan_url: &str, qr_svg: &str, host_is_local: bool) -> String {
                             <code id="lanUrl">{lan_url}</code>
                             <button type="button" class="btn btn-ghost btn-sm" id="copyUrlInline" title="Copy address">Copy</button>
                         </div>
-                        <ul id="altUrls" class="alt-urls"></ul>
                         <div class="qr-block">
                             <div class="qr-frame" id="qrFrame">{qr_svg}</div>
                             <p class="hint">Scan with your phone camera</p>
