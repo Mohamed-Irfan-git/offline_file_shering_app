@@ -59,35 +59,35 @@ jobs:
           touch "$PKG/uploads/.gitkeep"
 
           cat > "$PKG/README.txt" <<'EOF'
-LAN Share Portable Build
+          LAN Share Portable Build
 
-1. Connect all devices to the same Wi-Fi/LAN.
-2. Run the app from this folder.
-3. On this computer: http://localhost:5000
-4. On phones: use the LAN URL shown in terminal or scan QR code.
-5. Do not use localhost on phone.
+          1. Connect all devices to the same Wi-Fi/LAN.
+          2. Run the app from this folder.
+          3. On this computer: http://localhost:5000
+          4. On phones: use the LAN URL shown in terminal or scan QR code.
+          5. Do not use localhost on phone.
 
-Allow firewall access for port 5000 if prompted.
-EOF
+          Allow firewall access for port 5000 if prompted.
+          EOF
 
           if [[ "${{ matrix.archive_ext }}" == "tar.gz" ]]; then
             chmod +x "$PKG/${{ matrix.bin_name }}"
 
             cat > "$PKG/run.sh" <<'EOF'
-#!/usr/bin/env bash
-cd "$(dirname "$0")"
-./lan-share
-EOF
+          #!/usr/bin/env bash
+          cd "$(dirname "$0")"
+          ./lan-share
+          EOF
 
             chmod +x "$PKG/run.sh"
             tar -czf "${PKG}.tar.gz" "$PKG"
           else
             cat > "$PKG/run.bat" <<'EOF'
-@echo off
-cd /d "%~dp0"
-lan-share.exe
-pause
-EOF
+          @echo off
+          cd /d "%~dp0"
+          lan-share.exe
+          pause
+          EOF
 
             powershell -Command "Compress-Archive -Path '$PKG' -DestinationPath '${PKG}.zip' -Force"
           fi
