@@ -50,7 +50,7 @@ pub async fn list_files() -> Json<Vec<FileInfo>> {
         }
     }
 
-    files.sort_by(|a, b| b.modified.cmp(&a.modified));
+    files.sort_by_key(|file| std::cmp::Reverse(file.modified));
 
     Json(files)
 }
