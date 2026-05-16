@@ -1,9 +1,4 @@
-use axum::{
-    extract::Multipart,
-    http::StatusCode,
-    response::IntoResponse,
-    Json,
-};
+use axum::{extract::Multipart, http::StatusCode, response::IntoResponse, Json};
 
 use serde::Serialize;
 use tokio::io::AsyncWriteExt;
@@ -16,16 +11,11 @@ pub struct UploadResponse {
     pub count: usize,
 }
 
-pub async fn upload_file(
-    mut multipart: Multipart,
-) -> impl IntoResponse {
+pub async fn upload_file(mut multipart: Multipart) -> impl IntoResponse {
     let mut uploaded = Vec::new();
 
     while let Ok(Some(mut field)) = multipart.next_field().await {
-        let original_name = field
-            .file_name()
-            .unwrap_or("file")
-            .to_string();
+        let original_name = field.file_name().unwrap_or("file").to_string();
 
         let saved_name = generate_safe_file_name(&original_name);
         let path = format!("uploads/{}", saved_name);

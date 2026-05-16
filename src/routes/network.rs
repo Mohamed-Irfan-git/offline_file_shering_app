@@ -13,9 +13,7 @@ use crate::{
 };
 
 pub async fn get_network(headers: HeaderMap) -> Json<NetworkInfo> {
-    let host = headers
-        .get(header::HOST)
-        .and_then(|v| v.to_str().ok());
+    let host = headers.get(header::HOST).and_then(|v| v.to_str().ok());
 
     let (share_url, urls, host_is_local) = network::resolve_share_url(host);
 
@@ -29,9 +27,7 @@ pub async fn get_network(headers: HeaderMap) -> Json<NetworkInfo> {
 }
 
 pub async fn get_qr_svg(headers: HeaderMap) -> impl IntoResponse {
-    let host = headers
-        .get(header::HOST)
-        .and_then(|v| v.to_str().ok());
+    let host = headers.get(header::HOST).and_then(|v| v.to_str().ok());
 
     let (share_url, _, _) = network::resolve_share_url(host);
 

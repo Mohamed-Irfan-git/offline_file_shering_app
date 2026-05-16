@@ -1,18 +1,11 @@
-use axum::{
-    extract::Path,
-    http::StatusCode,
-    response::IntoResponse,
-    Json,
-};
+use axum::{extract::Path, http::StatusCode, response::IntoResponse, Json};
 
 use std::fs;
 
 use crate::{
     models::FileInfo,
     utils::{
-        file_icon::get_file_icon,
-        file_name::display_file_name,
-        file_size::format_file_size,
+        file_icon::get_file_icon, file_name::display_file_name, file_size::format_file_size,
         path_safety::upload_file_path,
     },
 };
@@ -28,10 +21,7 @@ pub async fn list_files() -> Json<Vec<FileInfo>> {
                 continue;
             }
 
-            let file_name = entry
-                .file_name()
-                .to_string_lossy()
-                .to_string();
+            let file_name = entry.file_name().to_string_lossy().to_string();
 
             let metadata = entry.metadata().ok();
             let size_bytes = metadata.as_ref().map(|m| m.len()).unwrap_or(0);
@@ -65,9 +55,7 @@ pub async fn list_files() -> Json<Vec<FileInfo>> {
     Json(files)
 }
 
-pub async fn delete_file_api(
-    Path(filename): Path<String>,
-) -> impl IntoResponse {
+pub async fn delete_file_api(Path(filename): Path<String>) -> impl IntoResponse {
     let Some(path) = upload_file_path(&filename) else {
         return StatusCode::BAD_REQUEST.into_response();
     };

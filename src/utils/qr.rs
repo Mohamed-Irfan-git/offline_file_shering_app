@@ -1,7 +1,4 @@
-use qrcode::{
-    render::svg,
-    QrCode,
-};
+use qrcode::{render::svg, QrCode};
 
 pub fn generate_qr_svg(data: &str) -> String {
     let code = QrCode::new(data.as_bytes()).unwrap();

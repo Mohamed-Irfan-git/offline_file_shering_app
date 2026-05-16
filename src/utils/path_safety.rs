@@ -11,7 +11,10 @@ pub fn upload_file_path(filename: &str) -> Option<PathBuf> {
 
     let path = Path::new("uploads").join(filename);
 
-    if path.components().any(|c| matches!(c, std::path::Component::ParentDir)) {
+    if path
+        .components()
+        .any(|c| matches!(c, std::path::Component::ParentDir))
+    {
         return None;
     }
 

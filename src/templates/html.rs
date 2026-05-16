@@ -1,8 +1,4 @@
-pub fn page_html(
-    lan_url: &str,
-    qr_svg: &str,
-    host_is_local: bool,
-) -> String {
+pub fn page_html(lan_url: &str, qr_svg: &str, host_is_local: bool) -> String {
     let alert_hidden = if host_is_local { "" } else { " hidden" };
 
     format!(
