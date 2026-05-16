@@ -7,14 +7,9 @@ use axum::{
 
 use tokio_util::io::ReaderStream;
 
-use crate::utils::{
-    file_name::display_file_name,
-    path_safety::upload_file_path,
-};
+use crate::utils::{file_name::display_file_name, path_safety::upload_file_path};
 
-pub async fn download_file(
-    Path(filename): Path<String>,
-) -> impl IntoResponse {
+pub async fn download_file(Path(filename): Path<String>) -> impl IntoResponse {
     let Some(path) = upload_file_path(&filename) else {
         return StatusCode::BAD_REQUEST.into_response();
     };
@@ -46,9 +41,8 @@ pub async fn download_file(
         .header(header::CONTENT_LENGTH, metadata.len())
         .header(
             header::CONTENT_DISPOSITION,
-            HeaderValue::from_str(&disposition).unwrap_or_else(|_| {
-                HeaderValue::from_static("attachment")
-            }),
+            HeaderValue::from_str(&disposition)
+                .unwrap_or_else(|_| HeaderValue::from_static("attachment")),
         )
         .body(body)
     {

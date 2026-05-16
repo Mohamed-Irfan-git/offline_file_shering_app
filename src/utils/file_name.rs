@@ -5,12 +5,7 @@ pub fn generate_safe_file_name(original_name: &str) -> String {
 
     let clean_name: String = original_name
         .chars()
-        .filter(|c| {
-            c.is_ascii_alphanumeric()
-                || *c == '.'
-                || *c == '-'
-                || *c == '_'
-        })
+        .filter(|c| c.is_ascii_alphanumeric() || *c == '.' || *c == '-' || *c == '_')
         .collect();
 
     let parts: Vec<&str> = clean_name.rsplitn(2, '.').collect();

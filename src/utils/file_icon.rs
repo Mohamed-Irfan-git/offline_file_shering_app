@@ -44,10 +44,7 @@ pub fn get_file_icon(file_name: &str) -> &'static str {
         || lower.ends_with(".rtf")
     {
         "📝"
-    } else if lower.ends_with(".xls")
-        || lower.ends_with(".xlsx")
-        || lower.ends_with(".csv")
-    {
+    } else if lower.ends_with(".xls") || lower.ends_with(".xlsx") || lower.ends_with(".csv") {
         "📊"
     } else if lower.ends_with(".apk")
         || lower.ends_with(".exe")

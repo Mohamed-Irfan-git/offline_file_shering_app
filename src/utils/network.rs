@@ -8,9 +8,7 @@ pub fn is_loopback_host(host: &str) -> bool {
 }
 
 fn is_private_ipv4(o: [u8; 4]) -> bool {
-    o[0] == 10
-        || (o[0] == 172 && (16..=31).contains(&o[1]))
-        || (o[0] == 192 && o[1] == 168)
+    o[0] == 10 || (o[0] == 172 && (16..=31).contains(&o[1])) || (o[0] == 192 && o[1] == 168)
 }
 
 fn ip_rank(ip: &str) -> u8 {
@@ -78,9 +76,7 @@ pub fn resolve_share_url(request_host: Option<&str>) -> (String, Vec<String>, bo
         .cloned()
         .unwrap_or_else(|| format!("http://localhost:{}", PORT));
 
-    let host_is_local = request_host
-        .map(is_loopback_host)
-        .unwrap_or(true);
+    let host_is_local = request_host.map(is_loopback_host).unwrap_or(true);
 
     (share, urls, host_is_local)
 }

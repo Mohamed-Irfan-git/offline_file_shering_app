@@ -1,9 +1,4 @@
-use axum::{
-    extract::State,
-    http::StatusCode,
-    response::IntoResponse,
-    Json,
-};
+use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
 
 use chrono::Utc;
 use serde::Deserialize;
@@ -13,11 +8,7 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-use crate::models::{
-    Device,
-    RegisterDeviceRequest,
-    RenameDeviceRequest,
-};
+use crate::models::{Device, RegisterDeviceRequest, RenameDeviceRequest};
 
 type DeviceStore = Arc<Mutex<HashMap<String, Device>>>;
 
